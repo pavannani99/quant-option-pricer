@@ -17,9 +17,13 @@ class BlackScholes:
         self.volatility = volatility
         self.interest_rate = interest_rate
 
-    def run(
-        self,
-    ):
+    def run(self):
+        """Legacy method for backward compatibility"""
+        self.calculate_prices()
+        self.calculate_greeks()
+
+    def calculate_prices(self):
+        """Calculate call and put option prices"""
         time_to_maturity = self.time_to_maturity
         strike = self.strike
         current_price = self.current_price
@@ -43,17 +47,69 @@ class BlackScholes:
 
         self.call_price = call_price
         self.put_price = put_price
+        self.d1 = d1
+        self.d2 = d2
+        
+        return call_price, put_price
 
-        # GREEKS
+    def calculate_greeks(self):
+        """Calculate all Greeks: Delta, Gamma, Theta, Vega, Rho"""
+        # Ensure prices are calculated first
+        if not hasattr(self, 'd1'):
+            self.calculate_prices()
+            
+        time_to_maturity = self.time_to_maturity
+        strike = self.strike
+        current_price = self.current_price
+        volatility = self.volatility
+        interest_rate = self.interest_rate
+        d1 = self.d1
+        d2 = self.d2
+
         # Delta
         self.call_delta = norm.cdf(d1)
-        self.put_delta = 1 - norm.cdf(d1)
+        self.put_delta = self.call_delta - 1
 
-        # Gamma
-        self.call_gamma = norm.pdf(d1) / (
-            strike * volatility * sqrt(time_to_maturity)
-        )
+        # Gamma (same for calls and puts)
+        self.call_gamma = norm.pdf(d1) / (current_price * volatility * sqrt(time_to_maturity))
         self.put_gamma = self.call_gamma
+
+        # Theta
+        theta_common = -(current_price * norm.pdf(d1) * volatility) / (2 * sqrt(time_to_maturity))
+        self.call_theta = (theta_common - interest_rate * strike * exp(-interest_rate * time_to_maturity) * norm.cdf(d2)) / 365
+        self.put_theta = (theta_common + interest_rate * strike * exp(-interest_rate * time_to_maturity) * norm.cdf(-d2)) / 365
+
+        # Vega (same for calls and puts)
+        self.call_vega = current_price * norm.pdf(d1) * sqrt(time_to_maturity) / 100
+        self.put_vega = self.call_vega
+
+        # Rho
+        self.call_rho = strike * time_to_maturity * exp(-interest_rate * time_to_maturity) * norm.cdf(d2) / 100
+        self.put_rho = -strike * time_to_maturity * exp(-interest_rate * time_to_maturity) * norm.cdf(-d2) / 100
+
+        return {
+            'call_delta': self.call_delta,
+            'put_delta': self.put_delta,
+            'call_gamma': self.call_gamma,
+            'put_gamma': self.put_gamma,
+            'call_theta': self.call_theta,
+            'put_theta': self.put_theta,
+            'call_vega': self.call_vega,
+            'put_vega': self.put_vega,
+            'call_rho': self.call_rho,
+            'put_rho': self.put_rho
+        }
+
+    def calculate_pnl(self, call_purchase_price: float = 0.0, put_purchase_price: float = 0.0):
+        """Calculate P&L given purchase prices"""
+        # Ensure prices are calculated
+        if not hasattr(self, 'call_price'):
+            self.calculate_prices()
+            
+        call_pnl = self.call_price - call_purchase_price
+        put_pnl = self.put_price - put_purchase_price
+        
+        return call_pnl, put_pnl
 
 
 if __name__ == "__main__":
