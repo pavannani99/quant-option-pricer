@@ -51,6 +51,16 @@ try:
             'created_at': 'Date'
         })
         st.dataframe(display_df, width='stretch', hide_index=True)
+        
+        # Add CSV download button with formatted data
+        csv = display_df.to_csv(index=False)
+        st.download_button(
+            label="📥 Download as CSV",
+            data=csv,
+            file_name="blackscholes_calculations.csv",
+            mime="text/csv"
+        )
+        
         st.markdown("---")
         st.subheader("🔄 Replay Calculation")
         calc_ids = history_df['calculation_id'].tolist()
