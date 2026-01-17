@@ -41,10 +41,10 @@ FINAL_VERIFICATION.md
 SYNTAX_ERRORS_FIXED.md
 VERIFICATION_CHECKLIST.md
 test_all_imports.py
-
+color_scheme.md
 # OS
 .DS_Store
 Thumbs.db
-
+COLOR_SCHEME.md
 # Streamlit
 .streamlit/secrets.toml
