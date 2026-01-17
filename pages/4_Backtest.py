@@ -6,14 +6,66 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from services.backtest import BacktestEngine
 from services.historical_data import HistoricalDataService
+
 st.set_page_config(
     page_title="Strategy Backtesting",
     page_icon="📈",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
-st.markdown("---")
-st.title("📈 Options Strategy Backtesting")
-st.markdown("Simulate and evaluate option trading strategies using historical market data")
+
+# Professional styling
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+    
+    .subheader-text {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 20px;
+    }
+    
+    .metric-box {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+        margin: 10px 0;
+    }
+    
+    .success-box {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #00c853;
+    }
+    
+    .loss-box {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #ff1744;
+    }
+    
+    .info-card {
+        background: #f0f4ff;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+        margin: 10px 0;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="main-header">📈 Options Strategy Backtesting</div>', unsafe_allow_html=True)
+st.markdown('<div class="subheader-text">Simulate and evaluate option trading strategies using historical market data</div>', unsafe_allow_html=True)
 with st.sidebar:
     st.header("Backtest Parameters")
     symbol = st.text_input("Stock Symbol", value="AAPL", help="Enter ticker symbol").upper()
@@ -106,81 +158,190 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.session_state['backtest_metrics'] = engine.calculate_metrics(result.pnl_series)
         result = st.session_state['backtest_result']
         metrics = st.session_state['backtest_metrics']
-        st.success(f"✅ Backtest completed for {symbol}")
-        st.subheader("Performance Summary")
-        col1, col2, col3, col4, col5 = st.columns(5)
-        with col1:
-            st.metric("Entry Price", f"${result.entry_price:.2f}")
-        with col2:
-            st.metric("Exit Price", f"${result.exit_price:.2f}")
-        with col3:
-            pnl_color = "normal" if result.pnl >= 0 else "inverse"
-            st.metric("Total P&L", f"${result.pnl:.2f}", f"{result.pnl_pct:.2f}%")
-        with col4:
-            st.metric("Entry Option Value", f"${result.option_entry_value:.2f}")
-        with col5:
-            st.metric("Exit Option Value", f"${result.option_exit_value:.2f}")
-        col1, col2, col3, col4 = st.columns(4)
-        with col1:
-            st.metric("Max P&L", f"${metrics['max_pnl']:.2f}")
-        with col2:
-            st.metric("Min P&L", f"${metrics['min_pnl']:.2f}")
-        with col3:
-            st.metric("Max Drawdown", f"${metrics['max_drawdown']:.2f}")
-        with col4:
-            st.metric("P&L Volatility", f"${metrics['volatility']:.2f}")
+        
         st.markdown("---")
-        st.subheader("P&L Progression Over Time")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📊 Performance Summary</div>', unsafe_allow_html=True)
+        
+        # Key metrics in professional cards
+        col1, col2, col3, col4, col5 = st.columns(5, gap="small")
+        
+        with col1:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Entry Price</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.entry_price:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Exit Price</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.exit_price:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            pnl_color = "#00c853" if result.pnl >= 0 else "#ff1744"
+            pnl_sign = "+" if result.pnl >= 0 else ""
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Total P&L</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: {pnl_color};">{pnl_sign}${result.pnl:.2f}</div>
+                <div style="font-size: 0.85rem; color: {pnl_color};">{pnl_sign}{result.pnl_pct:.2f}%</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Entry Option Value</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.option_entry_value:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col5:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Exit Option Value</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.option_exit_value:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Additional metrics
+        col1, col2, col3, col4 = st.columns(4, gap="small")
+        
+        with col1:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Max P&L</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #00c853;">${metrics['max_pnl']:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col2:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Min P&L</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #ff1744;">${metrics['min_pnl']:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col3:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Max Drawdown</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #ff9800;">${metrics['max_drawdown']:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col4:
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">P&L Volatility</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #667eea;">${metrics['volatility']:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📈 P&L Progression Over Time</div>', unsafe_allow_html=True)
+        
+        # Create professional P&L chart
         fig = go.Figure()
+        
+        # Add P&L line
         fig.add_trace(go.Scatter(
             x=result.dates,
             y=result.pnl_series,
             mode='lines',
             name='P&L',
-            line=dict(color='blue', width=2),
+            line=dict(color='#667eea', width=3),
             fill='tozeroy',
-            fillcolor='rgba(0, 100, 255, 0.2)'
+            fillcolor='rgba(102, 126, 234, 0.15)',
+            hovertemplate='<b>Date:</b> %{x|%Y-%m-%d}<br><b>P&L:</b> $%{y:.2f}<extra></extra>'
         ))
-        fig.add_hline(y=0, line_dash="dash", line_color="gray", opacity=0.5)
+        
+        # Add zero line
+        fig.add_hline(y=0, line_dash="dash", line_color="#999", opacity=0.5, annotation_text="Break-even")
+        
+        # Add max P&L line
+        fig.add_hline(y=metrics['max_pnl'], line_dash="dot", line_color="#00c853", opacity=0.3)
+        
+        # Add min P&L line
+        fig.add_hline(y=metrics['min_pnl'], line_dash="dot", line_color="#ff1744", opacity=0.3)
+        
         fig.update_layout(
-            xaxis_title="Date",
-            yaxis_title="P&L ($)",
+            xaxis_title="📅 Date",
+            yaxis_title="💰 P&L ($)",
             hovermode='x unified',
-            height=400
+            height=450,
+            template='plotly_white',
+            font=dict(family="Arial, sans-serif", size=12),
+            plot_bgcolor='rgba(240, 244, 255, 0.5)',
+            paper_bgcolor='white',
+            margin=dict(l=50, r=50, t=50, b=50)
         )
-        st.plotly_chart(fig, width='stretch')
+        
+        st.plotly_chart(fig, use_container_width=True)
+        
         st.markdown("---")
-        st.subheader("Strategy Details")
-        col1, col2 = st.columns(2)
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📋 Strategy Details</div>', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns(2, gap="large")
+        
         with col1:
-            st.markdown("### Trade Information")
-            st.write(f"**Strategy:** Buy {strategy_type.upper()} and Hold")
-            st.write(f"**Symbol:** {symbol}")
+            st.markdown("""
+            <div class="info-card">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">🎯 Trade Information</div>
+            </div>
+            """, unsafe_allow_html=True)
+            st.write(f"**Strategy Type:** Buy {strategy_type.upper()} and Hold")
+            st.write(f"**Stock Symbol:** {symbol}")
             st.write(f"**Entry Date:** {result.entry_date.strftime('%Y-%m-%d')}")
             st.write(f"**Exit Date:** {result.exit_date.strftime('%Y-%m-%d')}")
             st.write(f"**Holding Period:** {holding_days} days")
             st.write(f"**Strike Price:** ${strike:.2f}")
+        
         with col2:
-            st.markdown("### Market Conditions")
+            st.markdown("""
+            <div class="info-card">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">📊 Market Conditions</div>
+            </div>
+            """, unsafe_allow_html=True)
             st.write(f"**Entry Spot Price:** ${result.entry_price:.2f}")
             st.write(f"**Exit Spot Price:** ${result.exit_price:.2f}")
-            st.write(f"**Price Change:** ${result.exit_price - result.entry_price:.2f} ({((result.exit_price/result.entry_price - 1) * 100):.2f}%)")
+            price_change = result.exit_price - result.entry_price
+            price_change_pct = ((result.exit_price/result.entry_price - 1) * 100)
+            price_color = "🟢" if price_change >= 0 else "🔴"
+            st.write(f"**Price Change:** {price_color} ${price_change:.2f} ({price_change_pct:.2f}%)")
             st.write(f"**Volatility Used:** {volatility*100:.2f}%")
             st.write(f"**Interest Rate:** {interest_rate*100:.2f}%")
+        
         st.markdown("---")
-        st.subheader("📊 Interpretation")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">💡 Strategy Interpretation</div>', unsafe_allow_html=True)
+        
         if result.pnl > 0:
-            st.success(f"""
-            **Profitable Strategy!** 
-            The {strategy_type} option strategy generated a profit of ${result.pnl:.2f} ({result.pnl_pct:.2f}% return).
-            The underlying stock moved from ${result.entry_price:.2f} to ${result.exit_price:.2f}.
-            """)
+            st.markdown(f"""
+            <div class="success-box">
+                <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px;">✅ Profitable Strategy!</div>
+                <div style="font-size: 1rem; line-height: 1.6;">
+                    The <strong>{strategy_type.upper()}</strong> option strategy generated a profit of <strong style="color: #00c853;">${result.pnl:.2f}</strong> 
+                    with a return of <strong style="color: #00c853;">{result.pnl_pct:.2f}%</strong>.<br>
+                    The underlying stock moved from <strong>${result.entry_price:.2f}</strong> to <strong>${result.exit_price:.2f}</strong>.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         else:
-            st.error(f"""
-            **Loss Incurred** 
-            The {strategy_type} option strategy resulted in a loss of ${result.pnl:.2f} ({result.pnl_pct:.2f}% return).
-            The underlying stock moved from ${result.entry_price:.2f} to ${result.exit_price:.2f}.
-            """)
+            st.markdown(f"""
+            <div class="loss-box">
+                <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px;">⚠️ Loss Incurred</div>
+                <div style="font-size: 1rem; line-height: 1.6;">
+                    The <strong>{strategy_type.upper()}</strong> option strategy resulted in a loss of <strong style="color: #ff1744;">${result.pnl:.2f}</strong> 
+                    with a return of <strong style="color: #ff1744;">{result.pnl_pct:.2f}%</strong>.<br>
+                    The underlying stock moved from <strong>${result.entry_price:.2f}</strong> to <strong>${result.exit_price:.2f}</strong>.
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
         
         if metrics['max_drawdown'] > abs(result.pnl) * 0.5:
             st.warning(f"⚠️ High drawdown detected: ${metrics['max_drawdown']:.2f}. The position experienced significant unrealized losses during the holding period.")

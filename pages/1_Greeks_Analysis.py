@@ -9,13 +9,53 @@ from components.greeks import GreeksCalculator
 st.set_page_config(
     page_title="Greeks Analysis",
     page_icon="📈",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
-st.markdown("---")
-st.title("📈 Options Greeks Analysis")
-st.markdown("Analyze the risk sensitivities of your options positions")
-st.markdown("<br>", unsafe_allow_html=True)
+# Professional styling
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+    
+    .subheader-text {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 20px;
+    }
+    
+    .greek-card {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+        margin: 10px 0;
+        text-align: center;
+    }
+    
+    .greek-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 8px;
+    }
+    
+    .greek-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #667eea;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="main-header">📊 Options Greeks Analysis</div>', unsafe_allow_html=True)
+st.markdown('<div class="subheader-text">Analyze the risk sensitivities of your options positions</div>', unsafe_allow_html=True)
 
 # Sidebar inputs
 with st.sidebar:
@@ -103,9 +143,7 @@ with tab2:
 
 # Display current Greeks values
 st.markdown("---")
-st.markdown("<br>", unsafe_allow_html=True)
-st.subheader("Current Greeks Values")
-st.markdown("<br>", unsafe_allow_html=True)
+st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📊 Current Greeks Values</div>', unsafe_allow_html=True)
 
 from BlackScholes import BlackScholes
 bs = BlackScholes(time_to_maturity, strike, current_price, volatility, interest_rate)
@@ -114,39 +152,39 @@ current_greeks = bs.calculate_greeks()
 # Helper function for color-coded metrics
 def render_colored_metric(label: str, value: float, precision: int = 4):
     """Render a metric with color coding based on value sign"""
-    color = "#00C853" if value >= 0 else "#FF1744"
+    color = "#667eea" if value >= 0 else "#ff6b6b"
     formatted_value = f"{value:.{precision}f}"
     
     html = f"""
-    <div style="padding: 10px; border-radius: 5px; margin-bottom: 10px;">
-        <div style="font-size: 14px; color: #888; margin-bottom: 5px;">{label}</div>
-        <div style="font-size: 24px; font-weight: bold; color: {color};">{formatted_value}</div>
+    <div class="greek-card">
+        <div class="greek-label">{label}</div>
+        <div class="greek-value" style="color: {color};">{formatted_value}</div>
     </div>
     """
     return html
 
 # Render metrics with color coding
-col1, col2, col3, col4, col5 = st.columns(5)
+col1, col2, col3, col4, col5 = st.columns(5, gap="small")
 
 with col1:
-    st.markdown(render_colored_metric("Call Delta", current_greeks['call_delta']), unsafe_allow_html=True)
-    st.markdown(render_colored_metric("Put Delta", current_greeks['put_delta']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Call Δ (Delta)", current_greeks['call_delta']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Put Δ (Delta)", current_greeks['put_delta']), unsafe_allow_html=True)
 
 with col2:
-    st.markdown(render_colored_metric("Call Gamma", current_greeks['call_gamma']), unsafe_allow_html=True)
-    st.markdown(render_colored_metric("Put Gamma", current_greeks['put_gamma']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Call Γ (Gamma)", current_greeks['call_gamma']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Put Γ (Gamma)", current_greeks['put_gamma']), unsafe_allow_html=True)
 
 with col3:
-    st.markdown(render_colored_metric("Call Theta", current_greeks['call_theta']), unsafe_allow_html=True)
-    st.markdown(render_colored_metric("Put Theta", current_greeks['put_theta']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Call Θ (Theta)", current_greeks['call_theta']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Put Θ (Theta)", current_greeks['put_theta']), unsafe_allow_html=True)
 
 with col4:
-    st.markdown(render_colored_metric("Call Vega", current_greeks['call_vega']), unsafe_allow_html=True)
-    st.markdown(render_colored_metric("Put Vega", current_greeks['put_vega']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Call ν (Vega)", current_greeks['call_vega']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Put ν (Vega)", current_greeks['put_vega']), unsafe_allow_html=True)
 
 with col5:
-    st.markdown(render_colored_metric("Call Rho", current_greeks['call_rho']), unsafe_allow_html=True)
-    st.markdown(render_colored_metric("Put Rho", current_greeks['put_rho']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Call ρ (Rho)", current_greeks['call_rho']), unsafe_allow_html=True)
+    st.markdown(render_colored_metric("Put ρ (Rho)", current_greeks['put_rho']), unsafe_allow_html=True)
 
 # LinkedIn Footer
 st.markdown("---")

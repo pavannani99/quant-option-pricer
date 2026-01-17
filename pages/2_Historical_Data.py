@@ -6,14 +6,68 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from services.historical_data import HistoricalDataService
 from BlackScholes import BlackScholes
+
 st.set_page_config(
     page_title="Historical Data Analysis",
     page_icon="📊",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
-st.markdown("---")
-st.title("📊 Historical Data & Volatility Analysis")
-st.markdown("Fetch real market data and calculate historical volatility for option pricing")
+
+# Professional styling
+st.markdown("""
+<style>
+    .main-header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+    }
+    
+    .subheader-text {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 20px;
+    }
+    
+    .metric-box {
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 20px;
+        border-radius: 12px;
+        border-left: 4px solid #667eea;
+        margin: 10px 0;
+    }
+    
+    .option-card-call {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 4px solid #00c853;
+        text-align: center;
+    }
+    
+    .option-card-put {
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 4px solid #ff1744;
+        text-align: center;
+    }
+    
+    .info-box {
+        background: #f0f4ff;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #667eea;
+        margin: 10px 0;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="main-header">📊 Historical Data & Volatility Analysis</div>', unsafe_allow_html=True)
+st.markdown('<div class="subheader-text">Fetch real market data and calculate historical volatility for option pricing</div>', unsafe_allow_html=True)
 hist_service = HistoricalDataService()
 with st.sidebar:
     st.header("Market Data Parameters")
@@ -46,32 +100,70 @@ if fetch_button or 'historical_data' in st.session_state:
             st.session_state['hist_volatility'] = hist_volatility
             st.session_state['stats'] = stats
         st.success(f"✅ Successfully fetched data for {symbol}")
-        col1, col2, col3, col4 = st.columns(4)
+        
+        st.markdown("---")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📈 Market Statistics</div>', unsafe_allow_html=True)
+        
+        col1, col2, col3, col4 = st.columns(4, gap="small")
         with col1:
-            st.metric("Current Price", f"${current_price:.2f}")
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Current Price</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${current_price:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
         with col2:
-            st.metric("Historical Volatility", f"{hist_volatility*100:.2f}%")
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Historical Volatility</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">{hist_volatility*100:.2f}%</div>
+            </div>
+            """, unsafe_allow_html=True)
         with col3:
-            st.metric("Price Change", f"${stats['change']:.2f}", f"{stats['change_pct']:.2f}%")
+            price_change_color = "#00c853" if stats['change'] >= 0 else "#ff1744"
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Price Change</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: {price_change_color};">${stats['change']:.2f}</div>
+                <div style="font-size: 0.85rem; color: {price_change_color};">{stats['change_pct']:.2f}%</div>
+            </div>
+            """, unsafe_allow_html=True)
         with col4:
-            st.metric("Price Range", f"${stats['min']:.2f} - ${stats['max']:.2f}")
-        st.subheader("Historical Price Chart")
+            st.markdown(f"""
+            <div class="metric-box">
+                <div style="font-size: 0.9rem; color: #666;">Price Range</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${stats['min']:.2f} - ${stats['max']:.2f}</div>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📊 Historical Price Chart</div>', unsafe_allow_html=True)
         fig = go.Figure()
         fig.add_trace(go.Scatter(
             x=df.index,
             y=df['Close'],
             mode='lines',
             name='Close Price',
-            line=dict(color='blue', width=2)
+            line=dict(color='#667eea', width=3),
+            fill='tozeroy',
+            fillcolor='rgba(102, 126, 234, 0.15)',
+            hovertemplate='<b>Date:</b> %{x|%Y-%m-%d}<br><b>Price:</b> $%{y:.2f}<extra></extra>'
         ))
         fig.update_layout(
-            xaxis_title="Date",
-            yaxis_title="Price ($)",
+            xaxis_title="📅 Date",
+            yaxis_title="💰 Price ($)",
             hovermode='x unified',
-            height=400
+            height=450,
+            template='plotly_white',
+            font=dict(family="Arial, sans-serif", size=12),
+            plot_bgcolor='rgba(240, 244, 255, 0.5)',
+            paper_bgcolor='white',
+            margin=dict(l=50, r=50, t=50, b=50)
         )
-        st.plotly_chart(fig, width='stretch')
-        st.subheader("Rolling Volatility")
+        st.plotly_chart(fig, use_container_width=True)
+        
+        st.markdown("---")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">📉 Rolling Volatility (30-Day)</div>', unsafe_allow_html=True)
         rolling_vol = []
         dates = []
         for i in range(30, len(df)):
@@ -85,17 +177,26 @@ if fetch_button or 'historical_data' in st.session_state:
             y=rolling_vol,
             mode='lines',
             name='30-Day Rolling Volatility',
-            line=dict(color='orange', width=2)
+            line=dict(color='#ff9800', width=3),
+            fill='tozeroy',
+            fillcolor='rgba(255, 152, 0, 0.15)',
+            hovertemplate='<b>Date:</b> %{x|%Y-%m-%d}<br><b>Volatility:</b> %{y:.2f}%<extra></extra>'
         ))
         fig_vol.update_layout(
-            xaxis_title="Date",
-            yaxis_title="Volatility (%)",
+            xaxis_title="📅 Date",
+            yaxis_title="📊 Volatility (%)",
             hovermode='x unified',
-            height=300
+            height=400,
+            template='plotly_white',
+            font=dict(family="Arial, sans-serif", size=12),
+            plot_bgcolor='rgba(240, 244, 255, 0.5)',
+            paper_bgcolor='white',
+            margin=dict(l=50, r=50, t=50, b=50)
         )
-        st.plotly_chart(fig_vol, width='stretch')
+        st.plotly_chart(fig_vol, use_container_width=True)
+        
         st.markdown("---")
-        st.subheader("Option Pricing with Historical Volatility")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">💰 Option Pricing with Historical Volatility</div>', unsafe_allow_html=True)
         strike = current_price * (strike_pct / 100)
         bs = BlackScholes(
             time_to_maturity=time_to_maturity,
@@ -106,36 +207,47 @@ if fetch_button or 'historical_data' in st.session_state:
         )
         call_price, put_price = bs.calculate_prices()
         greeks = bs.calculate_greeks()
-        col1, col2 = st.columns(2)
+        
+        col1, col2 = st.columns(2, gap="large")
         with col1:
-            st.markdown("""
-                <div style="background-color: #90ee90; padding: 20px; border-radius: 10px; text-align: center;">
-                    <h3>CALL Option</h3>
-                    <h2>$""" + f"{call_price:.2f}" + """</h2>
-                    <p>Strike: $""" + f"{strike:.2f}" + """</p>
-                    <p>Delta: """ + f"{greeks['call_delta']:.4f}" + """</p>
+            st.markdown(f"""
+            <div class="option-card-call">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">📈 CALL Option</div>
+                <div style="font-size: 2.2rem; font-weight: 700; color: #1a5c1a; margin: 15px 0;">${call_price:.2f}</div>
+                <div style="font-size: 0.95rem; color: #333; margin: 10px 0;">
+                    <div>Strike: <strong>${strike:.2f}</strong></div>
+                    <div>Delta: <strong>{greeks['call_delta']:.4f}</strong></div>
+                    <div>Gamma: <strong>{greeks['call_gamma']:.4f}</strong></div>
                 </div>
+            </div>
             """, unsafe_allow_html=True)
         
         with col2:
-            st.markdown("""
-                <div style="background-color: #ffcccb; padding: 20px; border-radius: 10px; text-align: center;">
-                    <h3>PUT Option</h3>
-                    <h2>$""" + f"{put_price:.2f}" + """</h2>
-                    <p>Strike: $""" + f"{strike:.2f}" + """</p>
-                    <p>Delta: """ + f"{greeks['put_delta']:.4f}" + """</p>
+            st.markdown(f"""
+            <div class="option-card-put">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">📉 PUT Option</div>
+                <div style="font-size: 2.2rem; font-weight: 700; color: #8b0000; margin: 15px 0;">${put_price:.2f}</div>
+                <div style="font-size: 0.95rem; color: #333; margin: 10px 0;">
+                    <div>Strike: <strong>${strike:.2f}</strong></div>
+                    <div>Delta: <strong>{greeks['put_delta']:.4f}</strong></div>
+                    <div>Gamma: <strong>{greeks['put_gamma']:.4f}</strong></div>
                 </div>
+            </div>
             """, unsafe_allow_html=True)
         
         st.markdown("---")
-        st.subheader("📋 Use These Parameters")
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">💡 Use These Parameters</div>', unsafe_allow_html=True)
         param_text = f"""
         **Copy these values to the main calculator:**
-        - Current Asset Price: ${current_price:.2f}
-        - Volatility (σ): {hist_volatility:.4f}
-        - Strike Price: ${strike:.2f}
+        - Current Asset Price: **${current_price:.2f}**
+        - Volatility (σ): **{hist_volatility:.4f}**
+        - Strike Price: **${strike:.2f}**
         """
-        st.info(param_text)
+        st.markdown(f"""
+        <div class="info-box">
+            {param_text}
+        </div>
+        """, unsafe_allow_html=True)
     except Exception as e:
         st.error(f"Error fetching historical data: {str(e)}")
         st.info("Please check the symbol and date range.")

@@ -31,7 +31,7 @@ ENV/
 *.swp
 *.swo
 *~
-
+UI_UPGRADES.md
 # Database
 *.db-journal
 
