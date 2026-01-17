@@ -250,16 +250,18 @@ if fetch_button or 'historical_data' in st.session_state:
             """, unsafe_allow_html=True)
         
         st.markdown("---")
-        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0;">💡 Use These Parameters</div>', unsafe_allow_html=True)
-        param_text = f"""
-        **Copy these values to the main calculator:**
-        - Current Asset Price: **${current_price:.2f}**
-        - Volatility (σ): **{hist_volatility:.4f}**
-        - Strike Price: **${strike:.2f}**
-        """
+        st.markdown('<div style="font-size: 1.8rem; font-weight: 700; margin: 20px 0; color: #1565C0;">💡 Use These Parameters</div>', unsafe_allow_html=True)
+        
         st.markdown(f"""
-        <div class="info-box">
-            {param_text}
+        <div style="background: #E3F2FD; padding: 20px; border-radius: 10px; border-left: 4px solid #1565C0; margin: 10px 0;">
+            <div style="font-size: 1rem; color: #333; line-height: 1.8;">
+                <strong style="color: #1565C0;">Copy these values to the main calculator:</strong><br>
+                <div style="margin-top: 10px;">
+                    <div>📊 Current Asset Price: <strong style="color: #1565C0;">${current_price:.2f}</strong></div>
+                    <div>📈 Volatility (σ): <strong style="color: #1565C0;">{hist_volatility:.4f}</strong></div>
+                    <div>🎯 Strike Price: <strong style="color: #1565C0;">${strike:.2f}</strong></div>
+                </div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
     except Exception as e:

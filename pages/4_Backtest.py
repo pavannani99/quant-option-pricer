@@ -307,8 +307,8 @@ if run_backtest or 'backtest_result' in st.session_state:
         
         with col1:
             st.markdown("""
-            <div class="info-card">
-                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">🎯 Trade Information</div>
+            <div style="background: #E3F2FD; padding: 20px; border-radius: 10px; border-left: 4px solid #1565C0; margin-bottom: 20px;">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: #1565C0;">🎯 Trade Information</div>
             </div>
             """, unsafe_allow_html=True)
             st.write(f"**Strategy Type:** Buy {strategy_type.upper()} and Hold")
@@ -320,8 +320,8 @@ if run_backtest or 'backtest_result' in st.session_state:
         
         with col2:
             st.markdown("""
-            <div class="info-card">
-                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px;">📊 Market Conditions</div>
+            <div style="background: #E3F2FD; padding: 20px; border-radius: 10px; border-left: 4px solid #1565C0; margin-bottom: 20px;">
+                <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 15px; color: #1565C0;">📊 Market Conditions</div>
             </div>
             """, unsafe_allow_html=True)
             st.write(f"**Entry Spot Price:** ${result.entry_price:.2f}")
