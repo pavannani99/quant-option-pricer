@@ -16,10 +16,20 @@ st.set_page_config(
 # Professional styling
 st.markdown("""
 <style>
+    /* Professional Color Scheme */
+    :root {
+        --primary-blue: #1565C0;
+        --primary-orange: #F57C00;
+        --success-green: #2E7D32;
+        --error-red: #C62828;
+        --light-bg: #F8F9FA;
+        --border-color: #E0E0E0;
+    }
+    
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 10px;
@@ -32,10 +42,10 @@ st.markdown("""
     }
     
     .greek-card {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%);
         padding: 20px;
         border-radius: 12px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #1565C0;
         margin: 10px 0;
         text-align: center;
     }
@@ -49,7 +59,7 @@ st.markdown("""
     .greek-value {
         font-size: 1.8rem;
         font-weight: 700;
-        color: #667eea;
+        color: #1565C0;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -152,7 +162,7 @@ current_greeks = bs.calculate_greeks()
 # Helper function for color-coded metrics
 def render_colored_metric(label: str, value: float, precision: int = 4):
     """Render a metric with color coding based on value sign"""
-    color = "#667eea" if value >= 0 else "#ff6b6b"
+    color = "#1565C0" if value >= 0 else "#C62828"
     formatted_value = f"{value:.{precision}f}"
     
     html = f"""

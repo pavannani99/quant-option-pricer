@@ -17,10 +17,20 @@ st.set_page_config(
 # Professional styling
 st.markdown("""
 <style>
+    /* Professional Color Scheme */
+    :root {
+        --primary-blue: #1565C0;
+        --primary-orange: #F57C00;
+        --success-green: #2E7D32;
+        --error-red: #C62828;
+        --light-bg: #F8F9FA;
+        --border-color: #E0E0E0;
+    }
+    
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 10px;
@@ -33,32 +43,32 @@ st.markdown("""
     }
     
     .metric-box {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%);
         padding: 20px;
         border-radius: 12px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #1565C0;
         margin: 10px 0;
     }
     
     .success-box {
-        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
         padding: 20px;
         border-radius: 12px;
-        border-left: 4px solid #00c853;
+        border-left: 4px solid #2E7D32;
     }
     
     .loss-box {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        background: linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%);
         padding: 20px;
         border-radius: 12px;
-        border-left: 4px solid #ff1744;
+        border-left: 4px solid #C62828;
     }
     
     .info-card {
-        background: #f0f4ff;
+        background: #F8F9FA;
         padding: 15px;
         border-radius: 10px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #1565C0;
         margin: 10px 0;
     }
 </style>
@@ -169,7 +179,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Entry Price</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.entry_price:.2f}</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">${result.entry_price:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -177,12 +187,12 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Exit Price</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.exit_price:.2f}</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">${result.exit_price:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
         with col3:
-            pnl_color = "#00c853" if result.pnl >= 0 else "#ff1744"
+            pnl_color = "#2E7D32" if result.pnl >= 0 else "#C62828"
             pnl_sign = "+" if result.pnl >= 0 else ""
             st.markdown(f"""
             <div class="metric-box">
@@ -196,7 +206,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Entry Option Value</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.option_entry_value:.2f}</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">${result.option_entry_value:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -204,7 +214,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Exit Option Value</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${result.option_exit_value:.2f}</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">${result.option_exit_value:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -215,7 +225,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Max P&L</div>
-                <div style="font-size: 1.6rem; font-weight: 700; color: #00c853;">${metrics['max_pnl']:.2f}</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #2E7D32;">${metrics['max_pnl']:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -223,7 +233,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Min P&L</div>
-                <div style="font-size: 1.6rem; font-weight: 700; color: #ff1744;">${metrics['min_pnl']:.2f}</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #C62828;">${metrics['min_pnl']:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -231,7 +241,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Max Drawdown</div>
-                <div style="font-size: 1.6rem; font-weight: 700; color: #ff9800;">${metrics['max_drawdown']:.2f}</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #F57C00;">${metrics['max_drawdown']:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -239,7 +249,7 @@ if run_backtest or 'backtest_result' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">P&L Volatility</div>
-                <div style="font-size: 1.6rem; font-weight: 700; color: #667eea;">${metrics['volatility']:.2f}</div>
+                <div style="font-size: 1.6rem; font-weight: 700; color: #1565C0;">${metrics['volatility']:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -249,26 +259,30 @@ if run_backtest or 'backtest_result' in st.session_state:
         # Create professional P&L chart
         fig = go.Figure()
         
+        # Determine color based on P&L
+        pnl_color = '#2E7D32' if result.pnl >= 0 else '#C62828'
+        fill_color = 'rgba(46, 125, 50, 0.1)' if result.pnl >= 0 else 'rgba(198, 40, 40, 0.1)'
+        
         # Add P&L line
         fig.add_trace(go.Scatter(
             x=result.dates,
             y=result.pnl_series,
             mode='lines',
             name='P&L',
-            line=dict(color='#667eea', width=3),
+            line=dict(color=pnl_color, width=3),
             fill='tozeroy',
-            fillcolor='rgba(102, 126, 234, 0.15)',
+            fillcolor=fill_color,
             hovertemplate='<b>Date:</b> %{x|%Y-%m-%d}<br><b>P&L:</b> $%{y:.2f}<extra></extra>'
         ))
         
         # Add zero line
-        fig.add_hline(y=0, line_dash="dash", line_color="#999", opacity=0.5, annotation_text="Break-even")
+        fig.add_hline(y=0, line_dash="dash", line_color="#666", opacity=0.4, annotation_text="Break-even")
         
         # Add max P&L line
-        fig.add_hline(y=metrics['max_pnl'], line_dash="dot", line_color="#00c853", opacity=0.3)
+        fig.add_hline(y=metrics['max_pnl'], line_dash="dot", line_color="#2E7D32", opacity=0.2)
         
         # Add min P&L line
-        fig.add_hline(y=metrics['min_pnl'], line_dash="dot", line_color="#ff1744", opacity=0.3)
+        fig.add_hline(y=metrics['min_pnl'], line_dash="dot", line_color="#C62828", opacity=0.2)
         
         fig.update_layout(
             xaxis_title="📅 Date",
@@ -277,9 +291,11 @@ if run_backtest or 'backtest_result' in st.session_state:
             height=450,
             template='plotly_white',
             font=dict(family="Arial, sans-serif", size=12),
-            plot_bgcolor='rgba(240, 244, 255, 0.5)',
+            plot_bgcolor='#F8F9FA',
             paper_bgcolor='white',
-            margin=dict(l=50, r=50, t=50, b=50)
+            margin=dict(l=50, r=50, t=50, b=50),
+            xaxis=dict(showgrid=True, gridwidth=1, gridcolor='#E0E0E0'),
+            yaxis=dict(showgrid=True, gridwidth=1, gridcolor='#E0E0E0')
         )
         
         st.plotly_chart(fig, use_container_width=True)

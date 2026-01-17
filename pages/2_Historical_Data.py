@@ -17,10 +17,20 @@ st.set_page_config(
 # Professional styling
 st.markdown("""
 <style>
+    /* Professional Color Scheme */
+    :root {
+        --primary-blue: #1565C0;
+        --primary-orange: #F57C00;
+        --success-green: #2E7D32;
+        --error-red: #C62828;
+        --light-bg: #F8F9FA;
+        --border-color: #E0E0E0;
+    }
+    
     .main-header {
         font-size: 2.5rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 10px;
@@ -33,34 +43,34 @@ st.markdown("""
     }
     
     .metric-box {
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        background: linear-gradient(135deg, #F8F9FA 0%, #E3F2FD 100%);
         padding: 20px;
         border-radius: 12px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #1565C0;
         margin: 10px 0;
     }
     
     .option-card-call {
-        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        background: linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%);
         padding: 25px;
         border-radius: 12px;
-        border-left: 4px solid #00c853;
+        border-left: 4px solid #2E7D32;
         text-align: center;
     }
     
     .option-card-put {
-        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        background: linear-gradient(135deg, #FFCDD2 0%, #EF9A9A 100%);
         padding: 25px;
         border-radius: 12px;
-        border-left: 4px solid #ff1744;
+        border-left: 4px solid #C62828;
         text-align: center;
     }
     
     .info-box {
-        background: #f0f4ff;
+        background: #F8F9FA;
         padding: 15px;
         border-radius: 10px;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #1565C0;
         margin: 10px 0;
     }
 </style>
@@ -109,18 +119,18 @@ if fetch_button or 'historical_data' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Current Price</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${current_price:.2f}</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">${current_price:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         with col2:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Historical Volatility</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">{hist_volatility*100:.2f}%</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">{hist_volatility*100:.2f}%</div>
             </div>
             """, unsafe_allow_html=True)
         with col3:
-            price_change_color = "#00c853" if stats['change'] >= 0 else "#ff1744"
+            price_change_color = "#2E7D32" if stats['change'] >= 0 else "#C62828"
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Price Change</div>
@@ -132,7 +142,7 @@ if fetch_button or 'historical_data' in st.session_state:
             st.markdown(f"""
             <div class="metric-box">
                 <div style="font-size: 0.9rem; color: #666;">Price Range</div>
-                <div style="font-size: 1.8rem; font-weight: 700; color: #667eea;">${stats['min']:.2f} - ${stats['max']:.2f}</div>
+                <div style="font-size: 1.8rem; font-weight: 700; color: #1565C0;">${stats['min']:.2f} - ${stats['max']:.2f}</div>
             </div>
             """, unsafe_allow_html=True)
         
@@ -144,9 +154,9 @@ if fetch_button or 'historical_data' in st.session_state:
             y=df['Close'],
             mode='lines',
             name='Close Price',
-            line=dict(color='#667eea', width=3),
+            line=dict(color='#1565C0', width=3),
             fill='tozeroy',
-            fillcolor='rgba(102, 126, 234, 0.15)',
+            fillcolor='rgba(21, 101, 192, 0.1)',
             hovertemplate='<b>Date:</b> %{x|%Y-%m-%d}<br><b>Price:</b> $%{y:.2f}<extra></extra>'
         ))
         fig.update_layout(
@@ -156,9 +166,11 @@ if fetch_button or 'historical_data' in st.session_state:
             height=450,
             template='plotly_white',
             font=dict(family="Arial, sans-serif", size=12),
-            plot_bgcolor='rgba(240, 244, 255, 0.5)',
+            plot_bgcolor='#F8F9FA',
             paper_bgcolor='white',
-            margin=dict(l=50, r=50, t=50, b=50)
+            margin=dict(l=50, r=50, t=50, b=50),
+            xaxis=dict(showgrid=True, gridwidth=1, gridcolor='#E0E0E0'),
+            yaxis=dict(showgrid=True, gridwidth=1, gridcolor='#E0E0E0')
         )
         st.plotly_chart(fig, use_container_width=True)
         
@@ -177,9 +189,9 @@ if fetch_button or 'historical_data' in st.session_state:
             y=rolling_vol,
             mode='lines',
             name='30-Day Rolling Volatility',
-            line=dict(color='#ff9800', width=3),
+            line=dict(color='#F57C00', width=3),
             fill='tozeroy',
-            fillcolor='rgba(255, 152, 0, 0.15)',
+            fillcolor='rgba(245, 124, 0, 0.1)',
             hovertemplate='<b>Date:</b> %{x|%Y-%m-%d}<br><b>Volatility:</b> %{y:.2f}%<extra></extra>'
         ))
         fig_vol.update_layout(
@@ -189,9 +201,11 @@ if fetch_button or 'historical_data' in st.session_state:
             height=400,
             template='plotly_white',
             font=dict(family="Arial, sans-serif", size=12),
-            plot_bgcolor='rgba(240, 244, 255, 0.5)',
+            plot_bgcolor='#F8F9FA',
             paper_bgcolor='white',
-            margin=dict(l=50, r=50, t=50, b=50)
+            margin=dict(l=50, r=50, t=50, b=50),
+            xaxis=dict(showgrid=True, gridwidth=1, gridcolor='#E0E0E0'),
+            yaxis=dict(showgrid=True, gridwidth=1, gridcolor='#E0E0E0')
         )
         st.plotly_chart(fig_vol, use_container_width=True)
         
@@ -213,7 +227,7 @@ if fetch_button or 'historical_data' in st.session_state:
             st.markdown(f"""
             <div class="option-card-call">
                 <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">📈 CALL Option</div>
-                <div style="font-size: 2.2rem; font-weight: 700; color: #1a5c1a; margin: 15px 0;">${call_price:.2f}</div>
+                <div style="font-size: 2.2rem; font-weight: 700; color: #1B5E20; margin: 15px 0;">${call_price:.2f}</div>
                 <div style="font-size: 0.95rem; color: #333; margin: 10px 0;">
                     <div>Strike: <strong>${strike:.2f}</strong></div>
                     <div>Delta: <strong>{greeks['call_delta']:.4f}</strong></div>
@@ -226,7 +240,7 @@ if fetch_button or 'historical_data' in st.session_state:
             st.markdown(f"""
             <div class="option-card-put">
                 <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 10px;">📉 PUT Option</div>
-                <div style="font-size: 2.2rem; font-weight: 700; color: #8b0000; margin: 15px 0;">${put_price:.2f}</div>
+                <div style="font-size: 2.2rem; font-weight: 700; color: #B71C1C; margin: 15px 0;">${put_price:.2f}</div>
                 <div style="font-size: 0.95rem; color: #333; margin: 10px 0;">
                     <div>Strike: <strong>${strike:.2f}</strong></div>
                     <div>Delta: <strong>{greeks['put_delta']:.4f}</strong></div>

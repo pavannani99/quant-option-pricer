@@ -17,6 +17,16 @@ st.set_page_config(
 
 st.markdown(f"""
 <style>
+/* Professional Color Scheme */
+:root {{
+    --primary-blue: #1565C0;
+    --primary-orange: #F57C00;
+    --success-green: #2E7D32;
+    --error-red: #C62828;
+    --light-bg: #F8F9FA;
+    --border-color: #E0E0E0;
+}}
+
 /* Adjust the size and alignment of the CALL and PUT value containers */
 .metric-container {{
     display: flex;
@@ -31,14 +41,14 @@ st.markdown(f"""
 
 /* Custom classes for CALL and PUT values */
 .metric-call {{
-    background: linear-gradient(135deg, #90ee90 0%, #7ed97e 100%);
-    color: #1a5c1a;
+    background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+    color: #FFFFFF;
     margin-right: 10px;
 }}
 
 .metric-put {{
-    background: linear-gradient(135deg, #ffcccb 0%, #ff9999 100%);
-    color: #8b0000;
+    background: linear-gradient(135deg, #C62828 0%, #B71C1C 100%);
+    color: #FFFFFF;
 }}
 
 /* Style for the value text */
