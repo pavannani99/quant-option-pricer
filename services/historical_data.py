@@ -13,7 +13,7 @@ class HistoricalDataService:
             ticker = yf.Ticker(symbol)
             df = ticker.history(start=start_date, end=end_date)
             if df.empty:
-                raise ValueError(f"No data found for symbol {symbol}")
+                raise ValueError(f"No data found for symbol {symbol} between {start_date} and {end_date}. Please verify the symbol is correct and dates are not in the future.")
             self.cache[cache_key] = df
             return df
         except Exception as e:

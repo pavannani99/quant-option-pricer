@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from typing import Dict, List
 import sys
 import os
+import yfinance as yf
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from services.historical_data import HistoricalDataService
 from BlackScholes import BlackScholes
@@ -27,19 +28,40 @@ class BacktestEngine:
         self.start_date = start_date
         self.end_date = end_date
         self.hist_service = HistoricalDataService()
-        self.price_data = self.hist_service.fetch_data(symbol, start_date, end_date)
+        try:
+            self.price_data = self.hist_service.fetch_data(symbol, start_date, end_date)
+        except ValueError as e:
+            # If fetch fails, try with period parameter as fallback
+            try:
+                ticker = yf.Ticker(symbol)
+                self.price_data = ticker.history(period='1y')
+                if self.price_data.empty:
+                    raise ValueError(f"No data available for {symbol}")
+            except Exception as fallback_error:
+                raise ValueError(f"Failed to fetch data for {symbol}: {str(e)}")
     def run_strategy(self, strategy_type: str, strike: float, entry_date: str, 
                     holding_days: int, volatility: float, interest_rate: float) -> BacktestResult:
         entry_dt = pd.to_datetime(entry_date)
+        
+        # Handle timezone consistency
         if self.price_data.index.tz is not None:
             if entry_dt.tz is None:
                 entry_dt = entry_dt.tz_localize(self.price_data.index.tz)
         else:
             if entry_dt.tz is not None:
                 entry_dt = entry_dt.tz_localize(None)
+        
         exit_dt = entry_dt + timedelta(days=holding_days)
+        
+        # Get nearest indices
         entry_idx = self.price_data.index.get_indexer([entry_dt], method='nearest')[0]
         exit_idx = self.price_data.index.get_indexer([exit_dt], method='nearest')[0]
+        
+        # Ensure indices are valid
+        if entry_idx < 0 or entry_idx >= len(self.price_data):
+            entry_idx = max(0, min(entry_idx, len(self.price_data) - 1))
+        if exit_idx < 0 or exit_idx >= len(self.price_data):
+            exit_idx = max(0, min(exit_idx, len(self.price_data) - 1))
         if entry_idx >= len(self.price_data) or exit_idx >= len(self.price_data):
             raise ValueError("Entry or exit date outside available data range")
         actual_entry_date = self.price_data.index[entry_idx]
