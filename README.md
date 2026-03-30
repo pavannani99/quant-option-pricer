@@ -9,7 +9,7 @@ This repository provides an interactive Black-Scholes Pricing Model dashboard th
 1. **Options Pricing Visualization**: 
    - Displays both Call and Put option prices using an interactive heatmap.
    - The heatmap dynamically updates as you adjust parameters like Spot Price, Volatility, and Time to Maturity.
-   
+   !!
 2. **Interactive Dashboard**:
    - The dashboard allows real-time updates to the Black-Scholes model parameters.
    - Users can input different values for the Spot Price, Volatility, Strike Price, Time to Maturity, and Risk-Free Interest Rate to observe how these factors influence option prices.
